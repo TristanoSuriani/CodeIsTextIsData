@@ -1,0 +1,92 @@
+@startuml
+
+package analysis {
+
+    class Analyser
+
+    package lexing {
+        interface Lexer
+        class Token {
+            - String value
+            - int line
+            - TokenType type
+        }
+
+        enum TokenType {
+            WORD,
+            SEPARATOR
+        }
+    }
+
+    package parsing {
+        interface Parser
+
+        class Sentence {
+
+        }
+
+        interface SentenceElement
+        class Word implements SentenceElement
+        enum Separator implements SentenceElement {
+            COMMA,
+            PERIOD,
+            COLON,
+            SEMICOLON,
+            QUESTION_MARK,
+            EXCLAMATION_MARK
+        }
+    }
+}
+
+package runtime {
+
+    package query {
+        class QueryProcessor
+        class Query
+    }
+
+    package answer {
+        class Answer
+
+        class Amount
+        enum Subject {
+            WORD,
+            SENTENCE
+        }
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+Analyser -down-o Lexer
+Analyser -down-o Parser
+
+Lexer -down-> Token
+Token -down-* TokenType
+
+
+Parser -down-> Token
+Parser -down-> Sentence
+Sentence -down-> SentenceElement
+
+QueryProcessor -down-> Query
+QueryProcessor -down-> Answer
+QueryProcessor -down-> Sentence
+
+Answer -down-> Amount
+Answer -down-> Subject
+
+
+
+@enduml
