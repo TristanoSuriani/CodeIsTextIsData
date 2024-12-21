@@ -3,7 +3,11 @@ package nl.suriani.code.is.text.is.data.runtime.query;
 import java.util.Objects;
 import java.util.Optional;
 
-public record Query(SelectFromClause selectFromClause, Optional<WhereClause> whereClause, Optional<GroupByClause> groupByClause) {
+public record Query(SelectFromClause selectFromClause,
+                    Optional<WhereClause> whereClause,
+                    Optional<GroupByClause> groupByClause,
+                    Optional<OrderByClause> orderByClause,
+                    Optional<LimitClause> limitClause) {
 
     /*
         select (count)? word|sentence
@@ -58,16 +62,26 @@ public record Query(SelectFromClause selectFromClause, Optional<WhereClause> whe
         }
     }
 
-    record GroupByClause(Subject subject, Direction direction) {
+    record GroupByClause(Subject subject) {
         public GroupByClause {
+            Objects.requireNonNull(subject);
+        }
+    }
+
+    record OrderByClause(Subject subject, Direction direction) {
+        public OrderByClause {
             Objects.requireNonNull(subject);
             Objects.requireNonNull(direction);
         }
     }
 
+    record LimitClause(int limit) {}
+
     enum Subject {
         WORD,
-        SENTENCE
+        SENTENCE,
+        VALUE,
+        ITEM_COUNT
     }
 
     enum MatchType {
@@ -138,24 +152,20 @@ public record Query(SelectFromClause selectFromClause, Optional<WhereClause> whe
             Objects.requireNonNull(whereClause);
         }
 
-        public WithGroupByClause groupByWordAsc() {
-            return new WithGroupByClause(selectFromClause, whereClause, new GroupByClause(Subject.WORD, Direction.ASC));
+        public WithGroupByClause groupByWord() {
+            return new WithGroupByClause(selectFromClause, whereClause, new GroupByClause(Subject.WORD));
         }
 
-        public WithGroupByClause groupByWordDesc() {
-            return new WithGroupByClause(selectFromClause, whereClause, new GroupByClause(Subject.WORD, Direction.DESC));
-        }
-
-        public WithGroupByClause groupBySentenceAsc() {
-            return new WithGroupByClause(selectFromClause, whereClause, new GroupByClause(Subject.SENTENCE, Direction.ASC));
-        }
-
-        public WithGroupByClause groupBySentenceDesc() {
-            return new WithGroupByClause(selectFromClause, whereClause, new GroupByClause(Subject.SENTENCE, Direction.DESC));
+        public WithGroupByClause groupBySentence() {
+            return new WithGroupByClause(selectFromClause, whereClause, new GroupByClause(Subject.SENTENCE));
         }
 
         public Query build() {
-            return new Query(selectFromClause, Optional.of(whereClause), Optional.empty());
+            return new Query(selectFromClause,
+                    Optional.of(whereClause),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty());
         }
     }
 
@@ -167,7 +177,11 @@ public record Query(SelectFromClause selectFromClause, Optional<WhereClause> whe
         }
 
         public Query build() {
-            return new Query(selectFromClause, Optional.of(whereClause), Optional.of(groupByClause));
+            return new Query(selectFromClause,
+                    Optional.of(whereClause),
+                    Optional.of(groupByClause),
+                    Optional.empty(),
+                    Optional.empty());
         }
     }
 }
