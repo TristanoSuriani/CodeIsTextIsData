@@ -3,54 +3,112 @@ package nl.suriani.code.is.text.is.data.runtime.query;
 import java.util.Objects;
 import java.util.Optional;
 
-public record Query(SelectFromClause selectFromClause,
-                    Optional<WhereClause> whereClause,
-                    Optional<GroupByClause> groupByClause,
-                    Optional<OrderByClause> orderByClause,
-                    Optional<LimitClause> limitClause) {
+public sealed interface Query {
 
-    /*
-        select (count)? word|sentence
-            (
-                where word|sentence is|starts with|ends with|contains $1
-                (
-                    group by word|sentence
-                    (order by value|item_count ASC|DESC)?
-                )?
-            )?
-            (order by word|sentence ASC|DESC)?
-            (limit $2)?
 
-        TODO group by is now fused with order by. split.
-        TODO add limit
-     */
-
-    public Query {
-        Objects.requireNonNull(selectFromClause);
-        Objects.requireNonNull(whereClause);
-        Objects.requireNonNull(groupByClause);
+    record Builder() {
+        static GetWordsBuilder getWords() {
+            return new GetWordsBuilder(Optional.empty(), Optional.empty());
+        }
     }
 
-    public static WithSelectFromClause selectWords() {
-        return new WithSelectFromClause(new SelectFromClause(Subject.WORD, false));
+    record GetWords(Optional<WhereClause> whereClause, Optional<OrderByClause> orderByClause) implements Query {
+
+        public GetWords {
+            Objects.requireNonNull(whereClause);
+            Objects.requireNonNull(orderByClause);
+        }
     }
 
-    public static WithSelectFromClause selectCountWords() {
-        return new WithSelectFromClause(new SelectFromClause(Subject.WORD, true));
+    record CountWords(Optional<WhereClause> whereClause) implements Query {
+
+        public CountWords {
+            Objects.requireNonNull(whereClause);
+        }
     }
 
-    public static WithSelectFromClause selectSentences() {
-        return new WithSelectFromClause(new SelectFromClause(Subject.SENTENCE, false));
+    record GetSentences(Optional<WhereClause> whereClause) implements Query {
+
+        public GetSentences {
+            Objects.requireNonNull(whereClause);
+        }
     }
 
-    public static WithSelectFromClause selectCountSentences() {
-        return new WithSelectFromClause(new SelectFromClause(Subject.WORD, true));
+    record GetWordsBuilder(Optional<WhereClause> whereClause, Optional<OrderByClause> orderByClause) {
+        public GetWordsBuilder whereWordStartsWith(String parameter) {
+            return new GetWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.STARTS_WITH, true, parameter)),
+                    Optional.empty());
+        }
+
+        public GetWordsBuilder whereWordDoesNotStartWith(String parameter) {
+            return new GetWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.STARTS_WITH, false, parameter)),
+                    Optional.empty());
+        }
+
+        public GetWordsBuilder whereWordEndsWith(String parameter) {
+            return new GetWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.ENDS_WITH, true, parameter)),
+                    Optional.empty());
+        }
+
+        public GetWordsBuilder whereWordDoesNotEndWith(String parameter) {
+            return new GetWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.ENDS_WITH, false, parameter)),
+                    Optional.empty());
+        }
+
+        public GetWordsBuilder whereWordContains(String parameter) {
+            return new GetWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.CONTAINS, true, parameter)),
+                    Optional.empty());
+        }
+
+        public GetWordsBuilder whereWordDoesNotContain(String parameter) {
+            return new GetWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.CONTAINS, false, parameter)),
+                    Optional.empty());
+        }
+
+        public GetWords build() {
+            return new GetWords(whereClause, orderByClause);
+        }
     }
 
-    record SelectFromClause(Subject subject, boolean count) {
+    record CountWordsBuilder(Optional<WhereClause> whereClause) {
+        public CountWordsBuilder whereWordStartsWith(String parameter) {
+            return new CountWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.STARTS_WITH, true, parameter)));
+        }
 
-        public SelectFromClause {
-            Objects.requireNonNull(subject);
+        public CountWordsBuilder whereWordDoesNotStartWith(String parameter) {
+            return new CountWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.STARTS_WITH, false, parameter)));
+        }
+
+        public CountWordsBuilder whereWordEndsWith(String parameter) {
+            return new CountWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.ENDS_WITH, true, parameter)));
+        }
+
+        public CountWordsBuilder whereWordDoesNotEndWith(String parameter) {
+            return new CountWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.ENDS_WITH, false, parameter)));
+        }
+
+        public CountWordsBuilder whereWordContains(String parameter) {
+            return new CountWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.CONTAINS, true, parameter)));
+        }
+
+        public CountWordsBuilder whereWordDoesNotContain(String parameter) {
+            return new CountWordsBuilder(
+                    Optional.of(new WhereClause(Subject.WORD, MatchType.CONTAINS, false, parameter)));
+        }
+
+        public CountWords build() {
+            return new CountWords(whereClause);
         }
     }
 
@@ -62,20 +120,12 @@ public record Query(SelectFromClause selectFromClause,
         }
     }
 
-    record GroupByClause(Subject subject) {
-        public GroupByClause {
-            Objects.requireNonNull(subject);
-        }
-    }
-
     record OrderByClause(Subject subject, Direction direction) {
         public OrderByClause {
             Objects.requireNonNull(subject);
             Objects.requireNonNull(direction);
         }
     }
-
-    record LimitClause(int limit) {}
 
     enum Subject {
         WORD,
@@ -94,94 +144,5 @@ public record Query(SelectFromClause selectFromClause,
     enum Direction {
         ASC,
         DESC
-    }
-
-    public record WithSelectFromClause(SelectFromClause selectFromClause) {
-        public WithSelectFromClause {
-            Objects.requireNonNull(selectFromClause);
-        }
-
-        public WithWhereClause whereWordIs(String parameter) {
-            return new WithWhereClause(selectFromClause,
-                    new WhereClause(Subject.WORD, MatchType.IS, true, parameter));
-        }
-
-        public WithWhereClause whereWordIsNot(String parameter) {
-            return new WithWhereClause(selectFromClause,
-                    new WhereClause(Subject.WORD, MatchType.IS, false, parameter));
-        }
-
-        public WithWhereClause whereWordContains(String parameter) {
-            return new WithWhereClause(selectFromClause,
-                    new WhereClause(Subject.WORD, MatchType.CONTAINS, true, parameter));
-        }
-
-        public WithWhereClause whereWordDoesNotContain(String parameter) {
-            return new WithWhereClause(selectFromClause,
-                    new WhereClause(Subject.WORD, MatchType.CONTAINS, false, parameter));
-        }
-
-        public WithWhereClause whereWordStartsWith(String parameter) {
-            return new WithWhereClause(selectFromClause,
-                    new WhereClause(Subject.WORD, MatchType.STARTS_WITH, true, parameter));
-        }
-
-        public WithWhereClause whereWordDoesNotStartWith(String parameter) {
-            return new WithWhereClause(selectFromClause,
-                    new WhereClause(Subject.WORD, MatchType.STARTS_WITH, false, parameter));
-        }
-
-        public WithWhereClause whereWordEndsWith(String parameter) {
-            return new WithWhereClause(selectFromClause,
-                    new WhereClause(Subject.WORD, MatchType.ENDS_WITH, true, parameter));
-        }
-
-        public WithWhereClause whereWordDoesNotEndWith(String parameter) {
-            return new WithWhereClause(selectFromClause,
-                    new WhereClause(Subject.WORD, MatchType.ENDS_WITH, false, parameter));
-        }
-
-        public Query build() {
-            return new Query(selectFromClause, Optional.empty(), Optional.empty());
-        }
-    }
-
-    public record WithWhereClause(SelectFromClause selectFromClause, WhereClause whereClause) {
-        public WithWhereClause {
-            Objects.requireNonNull(selectFromClause);
-            Objects.requireNonNull(whereClause);
-        }
-
-        public WithGroupByClause groupByWord() {
-            return new WithGroupByClause(selectFromClause, whereClause, new GroupByClause(Subject.WORD));
-        }
-
-        public WithGroupByClause groupBySentence() {
-            return new WithGroupByClause(selectFromClause, whereClause, new GroupByClause(Subject.SENTENCE));
-        }
-
-        public Query build() {
-            return new Query(selectFromClause,
-                    Optional.of(whereClause),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty());
-        }
-    }
-
-    public record WithGroupByClause(SelectFromClause selectFromClause, WhereClause whereClause, GroupByClause groupByClause) {
-        public WithGroupByClause {
-            Objects.requireNonNull(selectFromClause);
-            Objects.requireNonNull(whereClause);
-            Objects.requireNonNull(groupByClause);
-        }
-
-        public Query build() {
-            return new Query(selectFromClause,
-                    Optional.of(whereClause),
-                    Optional.of(groupByClause),
-                    Optional.empty(),
-                    Optional.empty());
-        }
     }
 }
