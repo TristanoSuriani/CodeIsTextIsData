@@ -1,0 +1,48 @@
+@startuml
+
+
+package interfaces {
+    component orchestrator {
+    }
+}
+
+
+package parser {
+    component ParseDocument {
+        rectangle raw_text
+        rectangle Document
+    }
+}
+
+package runtime {
+
+        component GetWords {
+            rectangle Query.GetWords
+            rectangle Answer.ListOfWords
+        }
+
+        component CountWords {
+            rectangle Query.CountWords
+            rectangle Answer.ListOfWordsWithAmount
+        }
+
+        component GetSentences {
+            rectangle Query.GetSentences
+            rectangle Answer.ListOfSentences
+        }
+}
+
+
+
+raw_text -down-> Document : to
+
+Query.GetWords -down-> Answer.ListOfWords : to
+Query.CountWords -down-> Answer.ListOfWordsWithAmount : to
+Query.GetSentences -down-> Answer.ListOfSentences : to
+
+orchestrator -down--> ParseDocument : use
+orchestrator -down--> GetWords : use
+orchestrator -down--> CountWords : use
+orchestrator -down--> GetSentences : use
+
+@enduml

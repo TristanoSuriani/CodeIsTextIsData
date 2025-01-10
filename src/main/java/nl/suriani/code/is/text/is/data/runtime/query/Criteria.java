@@ -3,16 +3,19 @@ package nl.suriani.code.is.text.is.data.runtime.query;
 import java.util.Objects;
 import java.util.Optional;
 
-public sealed interface Query {
-
+public sealed interface Criteria {
 
     record Builder() {
-        static GetWordsBuilder getWords() {
+        public static GetWordsBuilder getWords() {
             return new GetWordsBuilder(Optional.empty(), Optional.empty());
+        }
+
+        public static CountWordsBuilder countWords() {
+            return new CountWordsBuilder(Optional.empty());
         }
     }
 
-    record GetWords(Optional<WhereClause> whereClause, Optional<OrderByClause> orderByClause) implements Query {
+    record GetWords(Optional<WhereClause> whereClause, Optional<OrderByClause> orderByClause) implements Criteria {
 
         public GetWords {
             Objects.requireNonNull(whereClause);
@@ -20,14 +23,14 @@ public sealed interface Query {
         }
     }
 
-    record CountWords(Optional<WhereClause> whereClause) implements Query {
+    record CountWords(Optional<WhereClause> whereClause) implements Criteria {
 
         public CountWords {
             Objects.requireNonNull(whereClause);
         }
     }
 
-    record GetSentences(Optional<WhereClause> whereClause) implements Query {
+    record GetSentences(Optional<WhereClause> whereClause) implements Criteria {
 
         public GetSentences {
             Objects.requireNonNull(whereClause);
