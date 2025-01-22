@@ -1,7 +1,7 @@
 package nl.suriani.code.is.text.is.data.usecase.get_words;
 
 import nl.suriani.code.is.text.is.data.analysis.parsing.Document;
-import nl.suriani.code.is.text.is.data.runtime.query.Criteria;
+import nl.suriani.code.is.text.is.data.runtime.query.CriteriaBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,7 +15,7 @@ class GetWordsTest extends BaseUseCaseTest {
     
     @Test
     void emptyDocument_emptyAnswer() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .build();
 
@@ -27,7 +27,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void singleSentence_noDuplicates() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .build();
 
@@ -53,7 +53,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void singleSentence_duplicates() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .build();
 
@@ -80,7 +80,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void multipleSentenceS_duplicates() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .build();
 
@@ -115,7 +115,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void whereWordContains() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .whereWordContains("ll")
                 .build();
@@ -149,7 +149,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void whereWordStartsWith() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .whereWordStartsWith("e")
                 .build();
@@ -180,7 +180,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void whereWordEndsWith() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .whereWordEndsWith("o")
                 .build();
@@ -211,7 +211,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void whereWordDoesNotContain() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .whereWordDoesNotContain("ll")
                 .build();
@@ -245,7 +245,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void whereWordDoesNotStartWith() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .whereWordDoesNotStartWith("e")
                 .build();
@@ -278,7 +278,7 @@ class GetWordsTest extends BaseUseCaseTest {
 
     @Test
     void whereWordDoesNotEndWith() {
-        var query = Criteria.Builder
+        var query = CriteriaBuilder
                 .getWords()
                 .whereWordDoesNotEndWith("o")
                 .build();

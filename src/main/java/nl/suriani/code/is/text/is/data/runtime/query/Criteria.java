@@ -1,25 +1,26 @@
 package nl.suriani.code.is.text.is.data.runtime.query;
 
+import nl.suriani.code.is.text.is.data.analysis.parsing.SentenceElement;
+
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public sealed interface Criteria {
 
-    record Builder() {
-        public static GetWordsBuilder getWords() {
-            return new GetWordsBuilder(Optional.empty(), Optional.empty());
-        }
+    Optional<WhereClause> whereClause();
 
-        public static CountWordsBuilder countWords() {
-            return new CountWordsBuilder(Optional.empty());
-        }
+    default Predicate<SentenceElement.Word> asWordPredicate() {
+        return whereClause()
+                .map(WhereClause::asWordPredicate)
+                .orElse(t -> true);
     }
 
-    record GetWords(Optional<WhereClause> whereClause, Optional<OrderByClause> orderByClause) implements Criteria {
+    record GetWords(Optional<WhereClause> whereClause, Optional<SortedClause> sortedClause) implements Criteria {
 
         public GetWords {
             Objects.requireNonNull(whereClause);
-            Objects.requireNonNull(orderByClause);
+            Objects.requireNonNull(sortedClause);
         }
     }
 
@@ -37,95 +38,29 @@ public sealed interface Criteria {
         }
     }
 
-    record GetWordsBuilder(Optional<WhereClause> whereClause, Optional<OrderByClause> orderByClause) {
-        public GetWordsBuilder whereWordStartsWith(String parameter) {
-            return new GetWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.STARTS_WITH, true, parameter)),
-                    Optional.empty());
-        }
-
-        public GetWordsBuilder whereWordDoesNotStartWith(String parameter) {
-            return new GetWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.STARTS_WITH, false, parameter)),
-                    Optional.empty());
-        }
-
-        public GetWordsBuilder whereWordEndsWith(String parameter) {
-            return new GetWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.ENDS_WITH, true, parameter)),
-                    Optional.empty());
-        }
-
-        public GetWordsBuilder whereWordDoesNotEndWith(String parameter) {
-            return new GetWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.ENDS_WITH, false, parameter)),
-                    Optional.empty());
-        }
-
-        public GetWordsBuilder whereWordContains(String parameter) {
-            return new GetWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.CONTAINS, true, parameter)),
-                    Optional.empty());
-        }
-
-        public GetWordsBuilder whereWordDoesNotContain(String parameter) {
-            return new GetWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.CONTAINS, false, parameter)),
-                    Optional.empty());
-        }
-
-        public GetWords build() {
-            return new GetWords(whereClause, orderByClause);
-        }
-    }
-
-    record CountWordsBuilder(Optional<WhereClause> whereClause) {
-        public CountWordsBuilder whereWordStartsWith(String parameter) {
-            return new CountWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.STARTS_WITH, true, parameter)));
-        }
-
-        public CountWordsBuilder whereWordDoesNotStartWith(String parameter) {
-            return new CountWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.STARTS_WITH, false, parameter)));
-        }
-
-        public CountWordsBuilder whereWordEndsWith(String parameter) {
-            return new CountWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.ENDS_WITH, true, parameter)));
-        }
-
-        public CountWordsBuilder whereWordDoesNotEndWith(String parameter) {
-            return new CountWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.ENDS_WITH, false, parameter)));
-        }
-
-        public CountWordsBuilder whereWordContains(String parameter) {
-            return new CountWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.CONTAINS, true, parameter)));
-        }
-
-        public CountWordsBuilder whereWordDoesNotContain(String parameter) {
-            return new CountWordsBuilder(
-                    Optional.of(new WhereClause(Subject.WORD, MatchType.CONTAINS, false, parameter)));
-        }
-
-        public CountWords build() {
-            return new CountWords(whereClause);
-        }
-    }
-
     record WhereClause(Subject subject, MatchType matchType, boolean affirmative, String parameter) {
         public WhereClause {
             Objects.requireNonNull(subject);
             Objects.requireNonNull(matchType);
             Objects.requireNonNull(parameter);
         }
+
+        public Predicate<SentenceElement.Word> asWordPredicate() {
+
+            Predicate<SentenceElement.Word> basePredicate = switch (matchType) {
+                case STARTS_WITH -> w -> w.asWord().value().startsWith(parameter);
+                case ENDS_WITH -> w -> w.asWord().value().endsWith(parameter);
+                case CONTAINS -> w -> w.asWord().value().contains(parameter);
+            };
+
+            return affirmative
+                    ? basePredicate
+                    : basePredicate.negate();
+        }
     }
 
-    record OrderByClause(Subject subject, Direction direction) {
-        public OrderByClause {
-            Objects.requireNonNull(subject);
+    record SortedClause(Direction direction) {
+        public SortedClause {
             Objects.requireNonNull(direction);
         }
     }
@@ -138,7 +73,6 @@ public sealed interface Criteria {
     }
 
     enum MatchType {
-        IS,
         STARTS_WITH,
         ENDS_WITH,
         CONTAINS,
