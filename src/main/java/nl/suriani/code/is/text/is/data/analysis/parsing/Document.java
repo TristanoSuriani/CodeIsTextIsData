@@ -35,4 +35,14 @@ public record Document(List<Sentence> sentences) {
                 .collect(Collectors.groupingBy(word -> word,
                         Collectors.counting()));
     }
+
+    public List<Sentence> extractSentencesWhere(Predicate<Sentence> predicate) {
+        return sentences().stream()
+                .filter(predicate)
+                .toList();
+    }
+
+    public List<Sentence> extractSentences() {
+        return extractSentencesWhere(t -> true);
+    }
 }

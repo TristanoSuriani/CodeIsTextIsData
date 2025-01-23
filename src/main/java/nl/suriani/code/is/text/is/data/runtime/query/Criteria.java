@@ -1,5 +1,6 @@
 package nl.suriani.code.is.text.is.data.runtime.query;
 
+import nl.suriani.code.is.text.is.data.analysis.parsing.Sentence;
 import nl.suriani.code.is.text.is.data.analysis.parsing.SentenceElement;
 
 import java.util.Objects;
@@ -13,6 +14,12 @@ public sealed interface Criteria {
     default Predicate<SentenceElement.Word> asWordPredicate() {
         return whereClause()
                 .map(WhereClause::asWordPredicate)
+                .orElse(t -> true);
+    }
+
+    default Predicate<Sentence> asSentencePredicate() {
+        return whereClause()
+                .map(WhereClause::asSentencePredicate)
                 .orElse(t -> true);
     }
 
@@ -36,6 +43,7 @@ public sealed interface Criteria {
         public GetSentences {
             Objects.requireNonNull(whereClause);
         }
+
     }
 
     record WhereClause(Subject subject, MatchType matchType, boolean affirmative, String parameter) {
@@ -48,9 +56,29 @@ public sealed interface Criteria {
         public Predicate<SentenceElement.Word> asWordPredicate() {
 
             Predicate<SentenceElement.Word> basePredicate = switch (matchType) {
-                case STARTS_WITH -> w -> w.asWord().value().startsWith(parameter);
-                case ENDS_WITH -> w -> w.asWord().value().endsWith(parameter);
-                case CONTAINS -> w -> w.asWord().value().contains(parameter);
+                case STARTS_WITH -> w -> w.asWord().value().startsWith(parameter.toLowerCase());
+                case ENDS_WITH -> w -> w.asWord().value().endsWith(parameter.toLowerCase());
+                case CONTAINS -> w -> w.asWord().value().contains(parameter.toLowerCase());
+            };
+
+            return affirmative
+                    ? basePredicate
+                    : basePredicate.negate();
+        }
+
+        public Predicate<Sentence> asSentencePredicate() {
+            Predicate<Sentence> basePredicate = switch (matchType) {
+                case STARTS_WITH -> s -> s.elements().stream()
+                        .filter(SentenceElement::isWord)
+                        .anyMatch(w -> w.asWord().value().startsWith(parameter.toLowerCase()));
+
+                case ENDS_WITH -> s -> s.elements().stream()
+                        .filter(SentenceElement::isWord)
+                        .anyMatch(w -> w.asWord().value().endsWith(parameter.toLowerCase()));
+
+                case CONTAINS -> s -> s.elements().stream()
+                        .filter(SentenceElement::isWord)
+                        .anyMatch(w -> w.asWord().value().contains(parameter.toLowerCase()));
             };
 
             return affirmative

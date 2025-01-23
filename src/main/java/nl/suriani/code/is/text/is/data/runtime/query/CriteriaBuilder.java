@@ -10,4 +10,8 @@ public record CriteriaBuilder() {
     public static CountWordsBuilder countWords() {
         return new CountWordsBuilder(Optional.empty());
     }
+
+    public static GetSentencesBuilder getSentences() {
+        return new GetSentencesBuilder(Optional.empty());
+    }
 }

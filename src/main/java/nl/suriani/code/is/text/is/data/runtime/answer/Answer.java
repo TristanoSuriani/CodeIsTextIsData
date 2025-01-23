@@ -1,5 +1,6 @@
 package nl.suriani.code.is.text.is.data.runtime.answer;
 
+import nl.suriani.code.is.text.is.data.analysis.parsing.Sentence;
 import nl.suriani.code.is.text.is.data.analysis.parsing.SentenceElement;
 
 import java.util.List;
@@ -10,6 +11,12 @@ public sealed interface Answer {
     record ListOfWords(List<SentenceElement.Word> words) implements Answer {
         public ListOfWords {
             Objects.requireNonNull(words);
+        }
+    }
+
+    record ListOfSentences(List<Sentence> sentences) implements Answer {
+        public ListOfSentences {
+            Objects.requireNonNull(sentences);
         }
     }
 
@@ -45,11 +52,19 @@ public sealed interface Answer {
         return this instanceof ListOfWordsWithAmount;
     }
 
+    default boolean isListOfSentences() {
+        return this instanceof ListOfSentences;
+    }
+
     default ListOfWords asListOfWords() {
         return (ListOfWords) this;
     }
 
     default ListOfWordsWithAmount asListOfWordsWithAmount() {
         return (ListOfWordsWithAmount) this;
+    }
+
+    default ListOfSentences asListOfSentences() {
+        return (ListOfSentences) this;
     }
 }

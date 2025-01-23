@@ -6,6 +6,7 @@ public sealed interface SentenceElement {
     record Word(String value) implements SentenceElement {
         public Word {
             Objects.requireNonNull(value);
+            value = value.toLowerCase();
         }
     }
     
