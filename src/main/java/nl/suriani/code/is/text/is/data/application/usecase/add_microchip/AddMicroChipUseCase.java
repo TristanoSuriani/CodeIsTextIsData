@@ -1,7 +1,7 @@
 package nl.suriani.code.is.text.is.data.application.usecase.add_microchip;
 
+import nl.suriani.code.is.text.is.data.adt.*;
 import nl.suriani.code.is.text.is.data.application.command.AddMicrochipCommand;
-import nl.suriani.code.is.text.is.data.gadt.*;
 import nl.suriani.code.is.text.is.data.model.Microchip;
 import nl.suriani.code.is.text.is.data.port.PetDoorRepository;
 import nl.suriani.code.is.text.is.data.application.usecase.EmptyResult;

@@ -1,10 +1,9 @@
 package nl.suriani.code.is.text.is.data.application.usecase.remove_microchip;
 
+import nl.suriani.code.is.text.is.data.adt.*;
 import nl.suriani.code.is.text.is.data.application.command.RemoveMicrochipCommand;
 import nl.suriani.code.is.text.is.data.application.usecase.EmptyResult;
 import nl.suriani.code.is.text.is.data.application.usecase.UseCase;
-import nl.suriani.code.is.text.is.data.gadt.*;
-import nl.suriani.code.is.text.is.data.model.Microchip;
 import nl.suriani.code.is.text.is.data.port.PetDoorRepository;
 
 import java.util.function.Supplier;

@@ -1,4 +1,4 @@
-package nl.suriani.code.is.text.is.data.gadt;
+package nl.suriani.code.is.text.is.data.adt;
 
 import nl.suriani.code.is.text.is.data.model.Microchip;
 import nl.suriani.code.is.text.is.data.model.PetDoor;

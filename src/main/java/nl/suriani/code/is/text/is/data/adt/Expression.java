@@ -1,4 +1,4 @@
-package nl.suriani.code.is.text.is.data.gadt;
+package nl.suriani.code.is.text.is.data.adt;
 
 public sealed interface Expression<T> permits AddMicrochip, FetchPetDoor, Literal, MapTo, RemoveMicrochip, SavePetDoor {
     T eval();
