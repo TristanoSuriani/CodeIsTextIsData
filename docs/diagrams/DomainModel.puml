@@ -1,0 +1,57 @@
+@startuml
+
+class PetDoor {
+    -Microchip (0..n)
+    -ModeId forcedMode (0..1)
+    -ModeId defaultMode (1..1)
+    -Mode (1..n)
+
+    +boolean canEnter(MicrochipId, LocalTime)
+    +boolean canExit(MicrochipId, LocalTime)
+    +PetDoor addMicrochip(MicrochipId, String)
+    +PetDoor removeMicrochip(MicrochipId)
+    +PetDoor addMode(Mode)
+    +PetDoor removeMode(Mode)
+    +PetDoor setDefaultMode(ModeId)
+    +PetDoor setForcedMode(ModeId)
+    +PetDoor unsetForcedMode(ModeId)
+}
+
+class Microchip {
+    -MicrochipId (1..1)
+    -String petName (1..1)
+    -ModeId activeMode (1..1)
+}
+
+class Mode {
+    -ModeId (1..1)
+    -ModeDescription (1..1)
+    -Rule canEnter (1..1)
+    -Rule canExit (1..1)
+    -boolean isDefault (1..1)
+
+    +boolean canEnter(LocalTime)
+    +boolean canExit(LocalTime)
+}
+
+class Rule {
+    -RuleType type(1..1)
+    -LocalTime activationTime (0..1)
+    -LocalTime deactivationTime (0..1)
+}
+
+enum RuleType {
+    ALWAYS,
+    NEVER,
+    TIME_BASED
+}
+
+PetDoor -down-o Microchip
+PetDoor -down-o Mode
+PetDoor -down-o ModeId
+Rule -down-o RuleType
+Microchip -down-o ModeId
+Mode -down-o ModeId
+Mode -down-o Rule
+
+@enduml

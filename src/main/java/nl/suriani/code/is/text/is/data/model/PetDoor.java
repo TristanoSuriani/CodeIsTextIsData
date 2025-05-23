@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public record PetDoor(List<Microchip> microchips) {
+public record PetDoor(List<Microchip> microchips, ModeId defaultMode, List<Mode> modes) {
     public PetDoor {
         Objects.requireNonNull(microchips);
         microchips = List.copyOf(microchips);
