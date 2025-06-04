@@ -1,5 +1,6 @@
 package nl.suriani.code.is.text.is.data.application.usecase.remove_microchip;
 
+import nl.suriani.code.is.text.is.data.adt.Environment;
 import nl.suriani.code.is.text.is.data.application.command.AddMicrochipCommand;
 import nl.suriani.code.is.text.is.data.application.command.RemoveMicrochipCommand;
 import nl.suriani.code.is.text.is.data.application.usecase.add_microchip.AddMicroChipUseCase;
@@ -41,14 +42,15 @@ class RemoveMicrochipUseCaseTest {
         var command = new RemoveMicrochipCommand(
                 UUID.randomUUID()
         );
+        var environment = new Environment();
 
         when(commandSupplier.get()).thenReturn(command);
-        when(petDoorRepository.fetch()).thenReturn(new PetDoor(List.of()));
+        when(petDoorRepository.fetch()).thenReturn(new PetDoor());
 
         var definition = useCase.define();
         assertThat(definition.explain())
                 .isEqualTo("(mapTo (SavePetDoor (RemoveMicrochip (FetchPetDoor) (Literal UUID))) mapper)");
-        definition.eval();
+        definition.eval(environment);
 
         verify(petDoorRepository, times(1))
                 .save(petDoorArgumentCaptor.capture());

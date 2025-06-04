@@ -4,8 +4,8 @@ import java.util.function.Function;
 
 public record MapTo<T, R>(Expression<T> expression, Function<T, R> mapper) implements Expression<R> {
     @Override
-    public R eval() {
-        return mapper.apply(expression.eval());
+    public R eval(Environment environment) {
+        return mapper.apply(expression.eval(environment));
     }
 
     @Override

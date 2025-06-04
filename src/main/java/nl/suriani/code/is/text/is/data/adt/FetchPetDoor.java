@@ -11,7 +11,7 @@ public record FetchPetDoor(Supplier<PetDoor> fetch) implements Expression<PetDoo
     }
 
     @Override
-    public PetDoor eval() {
+    public PetDoor eval(Environment environment) {
         return fetch.get();
     }
 

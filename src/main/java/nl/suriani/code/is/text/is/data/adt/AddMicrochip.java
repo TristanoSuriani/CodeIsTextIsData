@@ -12,8 +12,8 @@ public record AddMicrochip(Expression<PetDoor> petDoor, Expression<Microchip> mi
     }
 
     @Override
-    public PetDoor eval() {
-        return petDoor.eval().addMicrochip(microchip.eval());
+    public PetDoor eval(Environment environment) {
+        return petDoor.eval(environment).addMicrochip(microchip.eval(environment));
     }
 
     @Override

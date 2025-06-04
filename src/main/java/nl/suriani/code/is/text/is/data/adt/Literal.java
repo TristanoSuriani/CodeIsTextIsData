@@ -8,7 +8,7 @@ public record Literal<T>(T value) implements Expression<T> {
     }
 
     @Override
-    public T eval() {
+    public T eval(Environment environment) {
         return value;
     }
 

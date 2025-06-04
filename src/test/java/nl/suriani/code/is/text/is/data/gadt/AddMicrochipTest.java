@@ -1,5 +1,6 @@
 package nl.suriani.code.is.text.is.data.gadt;
 
+import nl.suriani.code.is.text.is.data.adt.Environment;
 import nl.suriani.code.is.text.is.data.application.command.AddMicrochipCommand;
 import nl.suriani.code.is.text.is.data.model.Microchip;
 import nl.suriani.code.is.text.is.data.model.PetDoor;
@@ -39,22 +40,24 @@ class AddMicrochipTest {
     void testAddMicrochip() {
         var command = new AddMicrochipCommand(
                 UUID.randomUUID(),
-                "Cakey"
+                "Cakey",
+                PetDoor.DEFAULT_REGISTERED_CATS_MODE_ID
         );
+        var environment = new Environment();
 
         when(commandSupplier.get()).thenReturn(command);
-        when(petDoorRepository.fetch()).thenReturn(new PetDoor(List.of()));
+        when(petDoorRepository.fetch()).thenReturn(new PetDoor());
 
         var definition = useCase.define();
         assertThat(definition.explain())
                 .isEqualTo("(mapTo (SavePetDoor (AddMicrochip (FetchPetDoor) (Literal Microchip))) mapper)");
-        definition.eval();
+        definition.eval(environment);
 
         verify(petDoorRepository, times(1))
                 .save(petDoorArgumentCaptor.capture());
 
         var petDoor = petDoorArgumentCaptor.getValue();
 
-        assertThat(petDoor.microchips().getFirst()).isEqualTo(new Microchip(command.idMicrochip(), command.namePet()));
+        assertThat(petDoor.microchips().getFirst()).isEqualTo(new Microchip(command.idMicrochip(), command.namePet(), command.activeMode()));
     }
 }

@@ -24,7 +24,9 @@ public class AddMicroChipUseCase implements UseCase<AddMicrochipCommand, EmptyRe
         return new MapTo<>(
                 new SavePetDoor(
                         new AddMicrochip(new FetchPetDoor(petDoorRepository::fetch),
-                                new Literal<>(new Microchip(command.idMicrochip(), command.namePet()))),
+                                new Literal<>(new Microchip(command.idMicrochip(),
+                                        command.namePet(),
+                                        command.activeMode()))),
 
                         petDoorRepository::save),
 

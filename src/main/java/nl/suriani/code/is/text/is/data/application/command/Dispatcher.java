@@ -1,5 +1,6 @@
 package nl.suriani.code.is.text.is.data.application.command;
 
+import nl.suriani.code.is.text.is.data.adt.Environment;
 import nl.suriani.code.is.text.is.data.application.usecase.Result;
 import nl.suriani.code.is.text.is.data.application.usecase.add_microchip.AddMicroChipUseCase;
 import nl.suriani.code.is.text.is.data.application.usecase.remove_microchip.RemoveMicrochipUseCase;
@@ -14,6 +15,7 @@ public class Dispatcher {
     }
 
     public Result dispatch(Command command) {
+        var environment = new Environment();
         var useCaseDefinition = switch (command) {
             case AddMicrochipCommand addMicroChipCommand -> new AddMicroChipUseCase(
                     () -> addMicroChipCommand,
@@ -24,6 +26,6 @@ public class Dispatcher {
                     petDoorRepository).define();
         };
 
-        return useCaseDefinition.eval();
+        return useCaseDefinition.eval(environment);
     }
 }

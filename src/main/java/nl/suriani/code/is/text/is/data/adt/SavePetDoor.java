@@ -12,8 +12,8 @@ public record SavePetDoor(Expression<PetDoor> petDoor, Consumer<PetDoor> consume
     }
 
     @Override
-    public PetDoor eval() {
-        var petDoor = this.petDoor.eval();
+    public PetDoor eval(Environment environment) {
+        var petDoor = this.petDoor.eval(environment);
         consumer.accept(petDoor);
         return petDoor;
     }
