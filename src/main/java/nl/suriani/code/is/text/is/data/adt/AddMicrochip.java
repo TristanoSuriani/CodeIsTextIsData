@@ -16,8 +16,4 @@ public record AddMicrochip(Expression<PetDoor> petDoor, Expression<Microchip> mi
         return petDoor.eval(environment).addMicrochip(microchip.eval(environment));
     }
 
-    @Override
-    public String explain() {
-        return "(AddMicrochip " + petDoor.explain() + " " + microchip.explain() + ")";
-    }
 }

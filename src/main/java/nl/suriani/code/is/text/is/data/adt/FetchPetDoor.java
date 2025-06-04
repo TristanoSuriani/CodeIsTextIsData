@@ -15,8 +15,4 @@ public record FetchPetDoor(Supplier<PetDoor> fetch) implements Expression<PetDoo
         return fetch.get();
     }
 
-    @Override
-    public String explain() {
-        return "(FetchPetDoor)";
-    }
 }

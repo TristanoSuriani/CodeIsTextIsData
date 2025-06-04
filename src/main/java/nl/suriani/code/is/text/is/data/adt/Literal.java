@@ -11,9 +11,4 @@ public record Literal<T>(T value) implements Expression<T> {
     public T eval(Environment environment) {
         return value;
     }
-
-    @Override
-    public String explain() {
-        return "(Literal " + value.getClass().getSimpleName() + ")";
-    }
 }

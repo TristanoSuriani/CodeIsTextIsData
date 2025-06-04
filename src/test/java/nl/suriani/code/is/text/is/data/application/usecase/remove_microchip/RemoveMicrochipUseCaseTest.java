@@ -1,10 +1,7 @@
 package nl.suriani.code.is.text.is.data.application.usecase.remove_microchip;
 
 import nl.suriani.code.is.text.is.data.adt.Environment;
-import nl.suriani.code.is.text.is.data.application.command.AddMicrochipCommand;
 import nl.suriani.code.is.text.is.data.application.command.RemoveMicrochipCommand;
-import nl.suriani.code.is.text.is.data.application.usecase.add_microchip.AddMicroChipUseCase;
-import nl.suriani.code.is.text.is.data.model.Microchip;
 import nl.suriani.code.is.text.is.data.model.PetDoor;
 import nl.suriani.code.is.text.is.data.port.PetDoorRepository;
 import org.junit.jupiter.api.Test;
@@ -15,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -48,8 +44,7 @@ class RemoveMicrochipUseCaseTest {
         when(petDoorRepository.fetch()).thenReturn(new PetDoor());
 
         var definition = useCase.define();
-        assertThat(definition.explain())
-                .isEqualTo("(mapTo (SavePetDoor (RemoveMicrochip (FetchPetDoor) (Literal UUID))) mapper)");
+
         definition.eval(environment);
 
         verify(petDoorRepository, times(1))

@@ -7,9 +7,4 @@ public record MapTo<T, R>(Expression<T> expression, Function<T, R> mapper) imple
     public R eval(Environment environment) {
         return mapper.apply(expression.eval(environment));
     }
-
-    @Override
-    public String explain() {
-        return "(mapTo " + expression.explain() + " mapper)";
-    }
 }

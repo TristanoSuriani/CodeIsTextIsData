@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 
-public record Microchip(UUID id, String namePet, ModeId activeMode) {
+public record Microchip(MicrochipId id, String namePet, ModeId activeMode) {
 
     public Microchip {
         Objects.requireNonNull(id);

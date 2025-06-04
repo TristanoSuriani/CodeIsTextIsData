@@ -17,9 +17,4 @@ public record SavePetDoor(Expression<PetDoor> petDoor, Consumer<PetDoor> consume
         consumer.accept(petDoor);
         return petDoor;
     }
-
-    @Override
-    public String explain() {
-        return "(SavePetDoor " + petDoor.explain() + ")";
-    }
 }

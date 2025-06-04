@@ -15,10 +15,4 @@ public record RemoveMicrochip(Expression<PetDoor> petDoor, Expression<UUID> idMi
     public PetDoor eval(Environment environment) {
         return petDoor.eval(environment).removeMicrochip(idMicrochip.eval(environment));
     }
-
-    @Override
-    public String explain() {
-        return "(RemoveMicrochip " + petDoor.explain() +
-                " " + idMicrochip.explain() + ")";
-    }
 }
