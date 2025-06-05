@@ -1,16 +1,25 @@
 package nl.suriani.code.is.text.is.data.analisys;
 
 import nl.suriani.code.is.text.is.data.adt.*;
+import nl.suriani.code.is.text.is.data.adt.deferred.AddMicroChipUseCase;
+import nl.suriani.code.is.text.is.data.application.usecase.Symbols;
 import nl.suriani.code.is.text.is.data.model.Microchip;
 import nl.suriani.code.is.text.is.data.model.MicrochipId;
 import nl.suriani.code.is.text.is.data.model.PetDoor;
+import nl.suriani.code.is.text.is.data.port.PetDoorRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@ExtendWith(MockitoExtension.class)
 class ExplainTest {
+
+    @Mock
+    private PetDoorRepository petDoorRepository;
+
     Explain explain = new Explain();
 
     @Test
@@ -28,5 +37,17 @@ class ExplainTest {
                 petDoor -> new Nothing());
 
         System.out.println(explain.apply(expression));
+    }
+
+    @Test
+    void test2() {
+        var expression = new AddMicroChipUseCase();
+        var environment = new Environment();
+        environment.put(Symbols.PET_DOOR_REPOSITORY, petDoorRepository);
+        environment.put(Symbols.MICROCHIP_ID, UUID.randomUUID());
+        environment.put(Symbols.NAME_PET, "Cake");
+        environment.put(Symbols.ACTIVE_MODE, PetDoor.DEFAULT_REGISTERED_CATS_MODE_ID);
+
+        System.out.println(explain.apply(expression.materialise(environment)));
     }
 }

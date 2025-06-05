@@ -1,13 +1,14 @@
-package nl.suriani.code.is.text.is.data.adt;
+package nl.suriani.code.is.text.is.data.adt.deferred;
 
+import nl.suriani.code.is.text.is.data.adt.*;
 import nl.suriani.code.is.text.is.data.application.usecase.Symbols;
 import nl.suriani.code.is.text.is.data.model.Microchip;
 import nl.suriani.code.is.text.is.data.model.MicrochipId;
 
-public record AddMicroChipUseCase() implements Expression<Nothing> {
+public record AddMicroChipUseCase() implements DeferredExpression<Nothing> {
 
     @Override
-    public Nothing eval(Environment environment) {
+    public Expression<Nothing> materialise(Environment environment) {
         var petDoorRepository = environment.get(Symbols.PET_DOOR_REPOSITORY);
         var microchipId = environment.get(Symbols.MICROCHIP_ID);
         var namePet = environment.get(Symbols.NAME_PET);
@@ -23,7 +24,6 @@ public record AddMicroChipUseCase() implements Expression<Nothing> {
 
                 petDoorRepository::save),
 
-            petDoor -> new Nothing())
-            .eval(environment);
+            petDoor -> new Nothing());
     }
 }
