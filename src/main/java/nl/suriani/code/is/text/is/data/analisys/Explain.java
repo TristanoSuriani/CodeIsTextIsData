@@ -11,7 +11,6 @@ public class Explain implements Function<Expression<?>, String> {
     public String apply(Expression<?> expression) {
         Objects.requireNonNull(expression);
         return switch (expression) {
-            case AddMicroChipUseCase addMicroChipUseCase -> "(AddMicroChipUseCase)";
             case AddMicrochip addMicrochip -> "(AddMicrochip " + apply(addMicrochip.petDoor()) + " " + apply(addMicrochip.microchip()) + ")";
             case FetchPetDoor fetchPetDoor -> "(FetchPetDoor)";
             case Literal<?> v -> "(Literal " + v.value().getClass().getSimpleName() + ")";

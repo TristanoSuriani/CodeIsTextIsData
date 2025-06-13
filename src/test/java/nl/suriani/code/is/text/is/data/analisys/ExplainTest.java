@@ -2,6 +2,7 @@ package nl.suriani.code.is.text.is.data.analisys;
 
 import nl.suriani.code.is.text.is.data.adt.*;
 import nl.suriani.code.is.text.is.data.adt.deferred.AddMicroChipUseCase;
+import nl.suriani.code.is.text.is.data.adt.deferred.RemoveMicroChipUseCase;
 import nl.suriani.code.is.text.is.data.application.usecase.Symbols;
 import nl.suriani.code.is.text.is.data.model.Microchip;
 import nl.suriani.code.is.text.is.data.model.MicrochipId;
@@ -21,6 +22,7 @@ class ExplainTest {
     private PetDoorRepository petDoorRepository;
 
     Explain explain = new Explain();
+    TreeExplain treeExplain = new TreeExplain();
 
     @Test
     void test() {
@@ -49,5 +51,11 @@ class ExplainTest {
         environment.put(Symbols.ACTIVE_MODE, PetDoor.DEFAULT_REGISTERED_CATS_MODE_ID);
 
         System.out.println(explain.apply(expression.materialise(environment)));
+        System.out.println(treeExplain.apply(expression.materialise(environment)));
+
+        var expression2 = new RemoveMicroChipUseCase();
+        environment.put(Symbols.PET_DOOR_REPOSITORY, petDoorRepository);
+        System.out.println(explain.apply(expression2.materialise(environment)));
+        System.out.println(treeExplain.apply(expression2.materialise(environment)));
     }
 }

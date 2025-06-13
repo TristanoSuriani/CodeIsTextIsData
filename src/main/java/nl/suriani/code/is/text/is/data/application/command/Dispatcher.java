@@ -2,6 +2,7 @@ package nl.suriani.code.is.text.is.data.application.command;
 
 import nl.suriani.code.is.text.is.data.adt.Environment;
 import nl.suriani.code.is.text.is.data.adt.deferred.AddMicroChipUseCase;
+import nl.suriani.code.is.text.is.data.adt.deferred.RemoveMicroChipUseCase;
 import nl.suriani.code.is.text.is.data.application.usecase.Symbols;
 import nl.suriani.code.is.text.is.data.port.PetDoorRepository;
 
@@ -26,7 +27,10 @@ public class Dispatcher {
                 yield new AddMicroChipUseCase();
             }
 
-            case RemoveMicrochipCommand removeMicrochipCommand -> throw new UnsupportedOperationException();
+            case RemoveMicrochipCommand removeMicrochipCommand -> {
+                environment.put(Symbols.MICROCHIP_ID, removeMicrochipCommand.idMicrochip());
+                yield new RemoveMicroChipUseCase();
+            }
         };
 
         var result = useCase.eval(environment);
