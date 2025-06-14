@@ -1,6 +1,6 @@
 package nl.suriani.code.is.text.is.data.adt.deferred;
 
-import nl.suriani.code.is.text.is.data.adt.Environment;
+import nl.suriani.code.is.text.is.data.adt.environment.Environment;
 import nl.suriani.code.is.text.is.data.adt.Expression;
 
 public interface DeferredExpression<T> {

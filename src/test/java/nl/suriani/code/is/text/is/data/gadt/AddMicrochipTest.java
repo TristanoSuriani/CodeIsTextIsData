@@ -26,9 +26,6 @@ class AddMicrochipTest {
     @Mock
     private PetDoorRepository petDoorRepository;
 
-    @Mock
-    private Supplier <AddMicrochipCommand> commandSupplier;
-
     @InjectMocks
     private Dispatcher dispatcher;
 

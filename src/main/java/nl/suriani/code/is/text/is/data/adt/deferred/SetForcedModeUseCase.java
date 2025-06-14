@@ -4,19 +4,19 @@ import nl.suriani.code.is.text.is.data.adt.*;
 import nl.suriani.code.is.text.is.data.adt.environment.Environment;
 import nl.suriani.code.is.text.is.data.adt.environment.Symbols;
 
-public record RemoveMicroChipUseCase() implements DeferredExpression<Nothing> {
+public record SetForcedModeUseCase() implements DeferredExpression<Nothing> {
 
     @Override
     public Expression<Nothing> materialise(Environment environment) {
         var petDoorRepository = environment.get(Symbols.PET_DOOR_REPOSITORY);
-        var microchipId = environment.get(Symbols.MICROCHIP_ID);
+        var forcedModeId = environment.get(Symbols.FORCED_MODE_ID);
 
         return new MapTo<>(
             new SavePetDoor(
-                new RemoveMicrochip(
+                new SetForcedMode(
                     new FetchPetDoor(petDoorRepository::fetch),
-                        new Literal<>(
-                            microchipId)),
+                    new Literal<>(
+                        forcedModeId)),
 
             petDoorRepository::save),
 

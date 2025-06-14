@@ -1,4 +1,4 @@
-package nl.suriani.code.is.text.is.data.application.usecase;
+package nl.suriani.code.is.text.is.data.adt.environment;
 
 import java.util.Objects;
 

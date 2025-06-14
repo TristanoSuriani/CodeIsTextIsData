@@ -49,6 +49,7 @@ public class TreeExplain implements Function<Expression<?>, String> {
             case SavePetDoor e -> List.of(e.petDoor());
             case RemoveMicrochip e -> List.of(e.petDoor(), e.idMicrochip());
             case MapTo<?, ?> e -> List.of(e.expression());
+            case SetForcedMode e -> List.of(e.petDoor(), e.modeId());
             default -> List.of();
         };
     }

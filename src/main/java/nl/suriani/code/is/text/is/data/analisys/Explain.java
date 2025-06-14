@@ -21,6 +21,11 @@ public class Explain implements Function<Expression<?>, String> {
                 var petDoor = apply(savePetDoor.petDoor());
                 yield "(SavePetDoor " + petDoor + ")";
             }
+            case SetForcedMode setForcedMode -> "(SetForcedMode " +
+                    apply(setForcedMode.petDoor()) +
+                    " " +
+                    apply(setForcedMode.modeId()) +
+                    ")";
         };
     }
 }

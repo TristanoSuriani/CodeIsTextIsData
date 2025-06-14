@@ -1,6 +1,4 @@
-package nl.suriani.code.is.text.is.data.adt;
-
-import nl.suriani.code.is.text.is.data.application.usecase.Symbol;
+package nl.suriani.code.is.text.is.data.adt.environment;
 
 import java.util.Map;
 import java.util.Optional;

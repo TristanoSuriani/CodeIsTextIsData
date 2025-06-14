@@ -1,9 +1,10 @@
 package nl.suriani.code.is.text.is.data.application.command;
 
-import nl.suriani.code.is.text.is.data.adt.Environment;
+import nl.suriani.code.is.text.is.data.adt.environment.Environment;
 import nl.suriani.code.is.text.is.data.adt.deferred.AddMicroChipUseCase;
 import nl.suriani.code.is.text.is.data.adt.deferred.RemoveMicroChipUseCase;
-import nl.suriani.code.is.text.is.data.application.usecase.Symbols;
+import nl.suriani.code.is.text.is.data.adt.environment.Symbols;
+import nl.suriani.code.is.text.is.data.model.MicrochipId;
 import nl.suriani.code.is.text.is.data.port.PetDoorRepository;
 
 public class Dispatcher {
@@ -20,7 +21,7 @@ public class Dispatcher {
 
         var useCase = switch (command) {
             case AddMicrochipCommand addMicroChipCommand -> {
-                environment.put(Symbols.MICROCHIP_ID, addMicroChipCommand.idMicrochip());
+                environment.put(Symbols.MICROCHIP_ID, new MicrochipId(addMicroChipCommand.idMicrochip()));
                 environment.put(Symbols.NAME_PET, addMicroChipCommand.namePet());
                 environment.put(Symbols.ACTIVE_MODE, addMicroChipCommand.activeMode());
 
