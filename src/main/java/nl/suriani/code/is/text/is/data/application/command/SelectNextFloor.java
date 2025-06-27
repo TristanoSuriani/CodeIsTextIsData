@@ -1,5 +1,4 @@
 package nl.suriani.code.is.text.is.data.application.command;
 
-public interface EventListener<E> {
-    void on(E event);
+public record SelectNextFloor() implements Command {
 }

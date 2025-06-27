@@ -1,6 +1,6 @@
-package nl.suriani.code.is.text.is.data.event;
+package nl.suriani.code.is.text.is.data.application.runtime;
 
-import nl.suriani.code.is.text.is.data.application.command.EventListener;
+import nl.suriani.code.is.text.is.data.application.event.Event;
 
 public class EventListenerImpl implements EventListener<Event> {
     public void on(Event event) {
