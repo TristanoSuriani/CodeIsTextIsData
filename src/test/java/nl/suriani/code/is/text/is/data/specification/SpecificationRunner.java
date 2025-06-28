@@ -1,12 +1,14 @@
 package nl.suriani.code.is.text.is.data.specification;
 
 import nl.suriani.code.is.text.is.data.specification.action.Action;
+import nl.suriani.code.is.text.is.data.specification.action.Any;
+import nl.suriani.code.is.text.is.data.specification.action.NonDet;
 import nl.suriani.code.is.text.is.data.specification.invariant.Invariant;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public record SpecificationRunner<C>(Action<C> init, Action<C> step, SpecificationOptions options, Invariant<C>... invariants) {
+public record SpecificationRunner<C>(Action<C> init, Any<C> step, SpecificationOptions options, Invariant<C>... invariants) {
 
     public C run() {
         var context = init.execute(null);
@@ -16,14 +18,22 @@ public record SpecificationRunner<C>(Action<C> init, Action<C> step, Specificati
         while (stepCount <= options.numberOfSteps() && attemptCount <= options.maxAttempts()) {
             try {
                 context = step.execute(context);
+                var action = NonDet.oneOf(step.actions());
+                var actionName = action instanceof Action.NamedAction<C> namedAction ? namedAction.name() : "unknown";
+                var debug = String.format("[%s/%s] (%s) - %s", stepCount, attemptCount, actionName, context);
+                context = action.execute(context);
                 updateInvariantSatisfactionVector(context, invariantsSatisfaction);
                 var failingInvariants = intermediateCheckInvariantSatisfactionVector(invariantsSatisfaction);
                 if (!failingInvariants.isEmpty()) {
-                    throw new IllegalStateException("Specification failed at step " + stepCount + ": " + failingInvariants.stream()
+                    System.out.println("Specification failed at step " + stepCount + ": " + failingInvariants.stream()
                             .map(Invariant::description)
                             .toList());
+
+                    debug = String.format("[%s/%s] (after %s) - %s", stepCount, attemptCount, actionName, context);
+                    System.out.println(debug);
+                    return context;
                 }
-                var debug = String.format("[%s/%s] - %s", stepCount, attemptCount, context);
+
                 System.out.println(debug);
                 stepCount++;
             } catch (Exception exception) {

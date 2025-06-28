@@ -14,25 +14,34 @@ public class LiftSpecification {
     @Test
     void test() {
         var allowedFloors = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8);
-        var init = Action.<Lift>define(ignored -> new Lift.Idle(0));
-        var goUp = Action.<Lift>define(lift -> switch (lift) {
-            case Lift.Idle idle -> idle.up(NonDet.oneOf(allowedFloors));
-            case Lift.GoingUp up -> up.up(NonDet.oneOf(allowedFloors));
-            default -> throw new IllegalStateException("Unexpected value: " + lift);
-        });
+        var init = Action.<Lift>define(
+                "init",
+                ignored -> new Lift.Idle(0));
 
-        var goDown = Action.<Lift>define(lift -> switch (lift) {
-            case Lift.Idle idle -> idle.down(NonDet.oneOf(allowedFloors));
-            case Lift.GoingDown down -> down.down(NonDet.oneOf(allowedFloors));
-            default -> throw new IllegalStateException("Unexpected value: " + lift);
-        });
+        var goUp = Action.<Lift>define(
+                "goUp",
+                lift -> switch (lift) {
+                    case Lift.Idle idle -> idle.up(NonDet.oneOf(allowedFloors));
+                    case Lift.GoingUp up -> up.up(NonDet.oneOf(allowedFloors));
+                    default -> throw new IllegalStateException("Unexpected value: " + lift);
+                });
 
-        var reachFloor = Action.<Lift>define(lift -> switch (lift) {
-            case Lift.Idle idle -> idle.newFloor(NonDet.oneOf(allowedFloors));
-            case Lift.GoingUp up -> up.newFloor(NonDet.oneOf(allowedFloors));
-            case Lift.GoingDown down -> down.newFloor(NonDet.oneOf(allowedFloors));
-            default -> throw new IllegalStateException("Unexpected value: " + lift);
-        });
+        var goDown = Action.<Lift>define(
+                "goDown",
+                lift -> switch (lift) {
+                    case Lift.Idle idle -> idle.down(NonDet.oneOf(allowedFloors));
+                    case Lift.GoingDown down -> down.down(NonDet.oneOf(allowedFloors));
+                    default -> throw new IllegalStateException("Unexpected value: " + lift);
+                });
+
+        var reachFloor = Action.<Lift>define(
+                "reachFloor",
+                lift -> switch (lift) {
+                    case Lift.Idle idle -> idle.newFloor(NonDet.oneOf(allowedFloors));
+                    case Lift.GoingUp up -> up.newFloor(NonDet.oneOf(allowedFloors));
+                    case Lift.GoingDown down -> down.newFloor(NonDet.oneOf(allowedFloors));
+                    default -> throw new IllegalStateException("Unexpected value: " + lift);
+                });
 
         var step = new Any<>(init, goUp, goDown, reachFloor);
 
