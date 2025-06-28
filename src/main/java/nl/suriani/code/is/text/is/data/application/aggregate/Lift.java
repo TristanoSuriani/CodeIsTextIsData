@@ -14,6 +14,7 @@ public interface Lift {
     sealed interface IdleOrGoingDown extends Lift {
         IdleOrGoingDown down(Integer targetFloor);
     }
+
     record Idle(Integer currentFloor) implements IdleOrGoingUp, IdleOrGoingDown {
         public Idle {
             Objects.requireNonNull(currentFloor);
