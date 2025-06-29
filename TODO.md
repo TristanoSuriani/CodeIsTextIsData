@@ -1,11 +1,13 @@
 # Next TODOs
 
-# add available floors with externalised configuration (Lift)
-# add public floors with externalised configuration (Authorisations)
+# add FINALLY invariant type to check that the condition will always be satisfied at the end of each run
+# in ValseSpecification, use FINALLY to check that valse reaches the Nivarvana and tops Sex and Rock and roll
+# in ValseSpecification, use EVENTUALLY to check that valse goes at the lowest end of drugs
+# in ValseSpecification, start implementing logic until all invariants are satisfied
 
-# add randomised model tests to ensure that
-* if the lift goes up never goes down before reaching the target floor
-* if the lift goes down never goes up before reaching the target floor
-* the target floor is never the current floor
-* the target floor is always bigger when going up and smaller when going down
-* current and target floors are always in the range of available floors
+
+
+later
+# add result object to Specification
+# in case of failure, return the trace of the execution with actual inputs
+# add the possibility to re-run the trace for debugging the model

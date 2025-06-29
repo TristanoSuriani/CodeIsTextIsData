@@ -14,4 +14,11 @@ public interface NonDet {
         }
         return values.get((int) (Math.random() * values.size()));
     }
+
+    static int withinRange(int min, int max) {
+        if (min >= max) {
+            throw new IllegalArgumentException("min must be less than max");
+        }
+        return min + (int) (Math.random() * (max - min));
+    }
 }

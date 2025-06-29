@@ -1,7 +1,7 @@
 package nl.suriani.code.is.text.is.data.application.aggregate;
 
 import nl.suriani.code.is.text.is.data.specification.SpecificationOptions;
-import nl.suriani.code.is.text.is.data.specification.SpecificationRunner;
+import nl.suriani.code.is.text.is.data.specification.Specification;
 import nl.suriani.code.is.text.is.data.specification.action.Action;
 import nl.suriani.code.is.text.is.data.specification.action.Any;
 import nl.suriani.code.is.text.is.data.specification.action.NonDet;
@@ -53,21 +53,21 @@ public class LiftSpecification {
                     default -> false;
                 });
 
-        var sometimesLiftIsIdle = Invariants.<Lift>sometimes(
+        var sometimesLiftIsIdle = Invariants.<Lift>eventually(
                 "Lift should be idle sometimes",
                 lift -> switch (lift) {
                     case Lift.Idle ignored -> true;
                     default -> false;
                 });
 
-        var sometimesLiftGoesUp = Invariants.<Lift>sometimes(
+        var sometimesLiftGoesUp = Invariants.<Lift>eventually(
                 "Lift should go up sometimes",
                 lift -> switch (lift) {
                     case Lift.GoingUp ignored -> true;
                     default -> false;
                 });
 
-        var sometimesLiftGoesDown = Invariants.<Lift>sometimes(
+        var sometimesLiftGoesDown = Invariants.<Lift>eventually(
                 "Lift should go down sometimes",
                 lift -> switch (lift) {
                     case Lift.GoingDown ignored -> true;
@@ -88,7 +88,7 @@ public class LiftSpecification {
                     default -> true;
                 });
 
-        var runner = new SpecificationRunner<Lift>(
+        var runner = new Specification<Lift>(
                 init,
                 step,
                 new SpecificationOptions(50, 100),

@@ -3,11 +3,11 @@ package nl.suriani.code.is.text.is.data.specification.invariant;
 import java.util.function.Predicate;
 
 public interface Invariants {
-    static<C> Invariant<C> sometimes(String description, Predicate<C> predicate) {
+    static<C> Invariant<C> eventually(String description, Predicate<C> predicate) {
         return new Invariant<C>(
                 description,
                 predicate,
-                TypeInvariant.SOMETIMES
+                TypeInvariant.EVENTUALLY
         );
     }
 
